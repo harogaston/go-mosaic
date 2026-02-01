@@ -1,13 +1,12 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"image/color"
 	"math"
 	"math/bits"
 	"os"
-	"slices"
-	"strconv"
 	"strings"
 
 	"github.com/harogaston/qr-decoder/bitseq"
@@ -734,7 +733,7 @@ func NewQRCode(r QRRequest) *qr {
 		encoded_data:        output,
 		mode:                mode,
 		logo:                r.logo,
-		debug:               r.debug_no_mask,
+		debug:               r.debug,
 	}
 	qr.generate()
 	return qr
@@ -797,6 +796,8 @@ func (qr *qr) Draw(shape writer.Shape) {
 		Cells: pixs,
 		Shape: shape,
 		Logo:  qr.logo,
+		Color: color.RGBA{10, 100, 0, 255},
+		Debug: qr.debug,
 	}
 	writer.WriteSVG(req)
 }
@@ -807,77 +808,70 @@ type QRRequest struct {
 	err_corr_level string
 	logo           string
 	version        int
-	// TODO: Remove later
-	debug_no_mask bool
+	debug          bool
 }
 
 func main() {
-	args := os.Args[1:]
+	// Define flags
+	dataStr := flag.String("data", "01234567", "Data to encode in the QR code")
+	shapeStr := flag.String("shape", "square", "Shape: square, circle, rounded, slanted, squircle")
+	levelStr := flag.String("level", "L", "ErrorCorrectionLevel: L, M, Q, H")
+	logoPath := flag.String("logo", "resources/logo_circle_mask.png", "Path to logo image to embed in the center")
+	versionInt := flag.Int("version", 0, "QR Code version 1-40 (auto-detected if 0)")
+	isMicro := flag.Bool("micro", false, "IsMicro: true/false")
+	debug := flag.Bool("debug", false, "Debug mode")
 
-	if len(args) > 0 && (args[0] == "-h" || args[0] == "--help") {
-		fmt.Println("Usage: qr-decoder [Data] [ErrorCorrectionLevel] [Version] [IsMicro] [Shape]")
-		fmt.Println("")
+	// Custom usage message
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage: %s [options] [Data]\n", os.Args[0])
 		fmt.Println("Arguments:")
 		fmt.Println("  Data: String to encode (default: \"01234567\")")
-		fmt.Println("  Shape: square, circle, rounded, diamond (default: square)")
-		fmt.Println("  ErrorCorrectionLevel: L, M, Q, H (default: L)")
-		fmt.Println("  Logo: provide path to logo image to embed in the center (optional)")
-		fmt.Println("  Version: QR Code version 1-40 (optional, auto-detected if 0 or omitted)")
-		fmt.Println("  IsMicro: true/false (default: false)")
-		fmt.Println("  --debug-no-mask: Disable masking for debugging (optional)")
-		fmt.Println("")
-		fmt.Println("Examples:")
-		fmt.Println("  qr-decoder L \"Hello World\"")
-		fmt.Println("  qr-decoder M \"1234567890\" 5 false circle")
-		return
+		fmt.Println("Options:")
+		flag.PrintDefaults()
+		fmt.Println("\nExamples:")
+		fmt.Printf("  %s -level M -shape circle -data \"Hello World\"\n", os.Args[0])
 	}
+
+	flag.Parse()
 
 	// Data
 	data := "01234567"
-	if len(args) > 0 {
-		data = args[0]
+	if dataStr != nil && *dataStr != "" {
+		data = *dataStr
 	}
 
-	var shape writer.Shape = writer.ShapeSquare
-	if len(args) > 1 {
-		shape = writer.Shape(args[1])
+	// Validate shape
+	var shape writer.Shape
+	switch writer.Shape(*shapeStr) {
+	case writer.ShapeSquare, writer.ShapeCircle, writer.ShapeRounded, writer.ShapeSlanted, writer.ShapeSquircle:
+		shape = writer.Shape(*shapeStr)
+	default:
+		shape = writer.ShapeSquare // Fallback or could panic/error
+		fmt.Printf("Warning: unknown shape '%s', defaulting to 'square'\n", *shapeStr)
 	}
 
-	// Error correction level parsing
+	// Validate error correction level
 	var err_corr_level string
-	if len(args) > 2 {
-		if args[2] == ERR_CORR_L || args[2] == ERR_CORR_M || args[2] == ERR_CORR_Q || args[2] == ERR_CORR_H {
-			err_corr_level = args[2]
-		} else {
-			panic("could not parse 'err_corr_level'")
-		}
-	} else {
-		err_corr_level = "L"
+	switch *levelStr {
+	case ERR_CORR_L, ERR_CORR_M, ERR_CORR_Q, ERR_CORR_H:
+		err_corr_level = *levelStr
+	default:
+		err_corr_level = ERR_CORR_L
+		fmt.Printf("Warning: unknown error correction level '%s', defaulting to 'L'\n", *levelStr)
 	}
 
-	//Logo
-	var logo_path string
-	if len(args) > 3 {
-		logo_path = args[3]
-	}
-
-	// Version
-	var version int64
-	if len(args) > 4 {
-		version, _ = strconv.ParseInt(args[4], 10, 64)
-	}
-
-	var debug_no_mask bool
-	if slices.Contains(args, "--debug-no-mask") {
-		debug_no_mask = true
+	// Validate logo path
+	if logoPath == nil || *logoPath == "" {
+		*logoPath = "resources/logo_circle_mask.png"
 	}
 
 	req := QRRequest{
 		input_data:     data,
-		logo:           logo_path,
+		is_micro:       *isMicro,
+		logo:           *logoPath,
 		err_corr_level: err_corr_level,
-		version:        int(version),
-		debug_no_mask:  debug_no_mask,
+		version:        *versionInt,
+		debug:          *debug,
 	}
 
 	qr := NewQRCode(req)

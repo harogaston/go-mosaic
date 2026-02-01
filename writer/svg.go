@@ -4,15 +4,16 @@ import (
 	"fmt"
 	"image/color"
 	"math/rand/v2"
-
 	"os"
 
 	svg "github.com/twpayne/go-svg"
 	"github.com/twpayne/go-svg/svgpath"
 )
 
-const output_file_path string = "qr.svg"
-const logoRelativeSize = 1. / 5.
+const (
+	output_file_path string = "qr.svg"
+	logoRelativeSize        = 1. / 5.
+)
 
 type SVGRequest struct {
 	Scale int
@@ -20,6 +21,7 @@ type SVGRequest struct {
 	Shape Shape
 	Logo  string
 	Color color.Color
+	Debug bool
 }
 
 func WriteSVG(req SVGRequest) {
@@ -40,6 +42,15 @@ func WriteSVG(req SVGRequest) {
 		WidthHeight(float64(dim), float64(dim), svg.Number).
 		Transform(svg.String(fmt.Sprintf("scale(%d) translate(%d, %d)", req.Scale, quietZone, quietZone)))
 	canvas.Attrs["transform-origin"] = svg.String("0 0")
+
+	// Add center cross hair for debugging
+	if req.Debug {
+		canvas.AppendChildren(
+			svg.Path().D(
+				svgpath.New().MoveToAbs([]float64{float64(dim) / 2, 0}).LineToAbs([]float64{float64(dim) / 2, float64(dim)}).MoveToAbs([]float64{0, float64(dim) / 2}).LineToAbs([]float64{float64(dim), float64(dim) / 2}),
+			).Style("stroke:red;stroke-width:0.1"),
+		)
+	}
 
 	// Definitions
 	circle := svg.Circle().R(svg.Number(0.5)).ID(svg.String(ShapeCircle))
