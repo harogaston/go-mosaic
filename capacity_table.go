@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/harogaston/qr-decoder/version"
+	"github.com/harogaston/go-mosaic/version"
 )
 
 // BlockGroup represents a group of blocks with the same characteristics

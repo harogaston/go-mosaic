@@ -1,6 +1,6 @@
 package modes
 
-import "github.com/harogaston/qr-decoder/bitseq"
+import "github.com/harogaston/go-mosaic/bitseq"
 
 var alphanumericValues = map[rune]int{
 	'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,

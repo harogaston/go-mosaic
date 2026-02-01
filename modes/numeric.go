@@ -1,8 +1,9 @@
 package modes
 
 import (
-	"github.com/harogaston/qr-decoder/bitseq"
 	"strconv"
+
+	"github.com/harogaston/go-mosaic/bitseq"
 )
 
 func EncodeNumeric(input string) bitseq.BitSeq {

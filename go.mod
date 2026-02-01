@@ -1,4 +1,4 @@
-module github.com/harogaston/qr-decoder
+module github.com/harogaston/go-mosaic
 
 go 1.24.1
 

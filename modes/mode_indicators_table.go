@@ -1,8 +1,8 @@
 package modes
 
 import (
-	"github.com/harogaston/qr-decoder/bitseq"
-	"github.com/harogaston/qr-decoder/version"
+	"github.com/harogaston/go-mosaic/bitseq"
+	"github.com/harogaston/go-mosaic/version"
 )
 
 // Constants for specific versions

@@ -1,4 +1,4 @@
-qr-decoder
+go-mosaic
 ====
 
 # Introduction
