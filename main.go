@@ -720,7 +720,7 @@ func NewQRCode(r QRRequest) *qr {
 	output = ApplyQRPadding(output, dataCapacityBytes)
 
 	// Initialize data structures
-	size := 21 + (version.Number-1)*4
+	size := version.Size()
 	matrix := make([][]module, size)
 	isFunctionPattern := make([][]bool, size)
 	for i := range size {
@@ -858,7 +858,12 @@ func main() {
 	// Validate logo path
 	var logo string
 	if *logoPath == true {
-		logo = "resources/logo_circle_mask.png"
+		switch shape {
+		case writer.ShapeCircle:
+			logo = "resources/logo_circle.jpg"
+		default:
+			logo = "resources/logo_square.jpg"
+		}
 	}
 
 	// Validate error correction level

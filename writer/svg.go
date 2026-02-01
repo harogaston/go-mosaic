@@ -3,6 +3,7 @@ package writer
 import (
 	"fmt"
 	"image/color"
+	"math"
 	"math/rand/v2"
 	"os"
 
@@ -12,7 +13,9 @@ import (
 
 const (
 	output_file_path string = "qr.svg"
-	logoRelativeSize        = 1. / 5.
+	logoRelativeSize        = 1. / 6.
+	cell_gap                = 0.125
+	logoBorderWidth         = 0.4
 )
 
 type SVGRequest struct {
@@ -64,46 +67,42 @@ func WriteSVG(req SVGRequest) {
 	).ID(svg.String(ShapeSquircle))
 
 	alignmentBackground := svg.Use().Href(svg.String("#square")).Style("fill:white")
-	alignmentBackground.Attrs["transform"] = svg.String(fmt.Sprintf("scale(%d) translate(%f, %f)", 5, 0/5., 0/5.))
-	alignmentOuterRing := svg.Use().Href(svg.String("#" + string(req.Shape))).Style(svg.String(GetPaddedStyle(req.Shape, req.Color, color.Black, 0.065)))
-	alignmentOuterRing.Attrs["transform"] = svg.String(fmt.Sprintf("scale(%f) translate(%f, %f)", 4.8, 0.1/4.8, 0.1/4.8))
-	alignmentMiddleRing := svg.Use().Href(svg.String("#" + string(req.Shape))).Style(svg.String(GetPaddedStyle(req.Shape, color.White, color.White, 0.065)))
-	alignmentMiddleRing.Attrs["transform"] = svg.String(fmt.Sprintf("scale(%d) translate(%f, %f)", 3, 1./3., 1./3.))
-	alignmentCenterRing := svg.Use().Href(svg.String("#" + string(req.Shape))).Style(svg.String(GetPaddedStyle(req.Shape, req.Color, color.Black, 0.065)))
-	alignmentCenterRing.Attrs["transform"] = svg.String(fmt.Sprintf("scale(%d) translate(%f, %f)", 1, 2./1., 2./1.))
-	alignmentPattern := svg.G(alignmentBackground, alignmentOuterRing, alignmentMiddleRing, alignmentCenterRing).ID("alignmentpattern")
+	alignmentBackground.Attrs["transform"] = svg.String(GetTransform(req.Shape, 5.0, 0.0, 0.))
+	alignmentOuterRing := svg.Use().Href(svg.String("#" + string(req.Shape))).Style(svg.String(GetStyle(req.Shape, req.Color, color.Black, 5.0)))
+	alignmentOuterRing.Attrs["transform"] = svg.String(GetTransform(req.Shape, 5.0, 0.0, 0.2))
+	alignmentMiddleRing := svg.Use().Href(svg.String("#" + string(req.Shape))).Style(svg.String(NoStrokeStyle(color.White, color.White)))
+	alignmentMiddleRing.Attrs["transform"] = svg.String(GetTransform(req.Shape, 3.0, 1.0, 0.))
+	alignmentCenterRing := svg.Use().Href(svg.String("#" + string(req.Shape))).Style(svg.String(NoStrokeStyle(req.Color, color.Black)))
+	alignmentCenterRing.Attrs["transform"] = svg.String(GetTransform(req.Shape, 1.0, 2.0, 0.))
+	alignmentPatternGroup := svg.G(alignmentBackground, alignmentOuterRing, alignmentMiddleRing, alignmentCenterRing).ID("alignmentpattern")
 
 	finderBackground := svg.Use().Href(svg.String("#square")).Style("fill:white")
-	finderBackground.Attrs["transform"] = svg.String(fmt.Sprintf("scale(%d) translate(%f, %f)", 7, 0/7., 0/7.))
-	finderOuterRing := svg.Use().Href(svg.String("#" + string(req.Shape))).Style(svg.String(GetPaddedStyle(req.Shape, req.Color, color.Black, 0.025)))
-	finderOuterRing.Attrs["transform"] = svg.String(fmt.Sprintf("scale(%f) translate(%f, %f)", 6.8, 0.1/6.8, 0.1/6.8))
-	finderMiddleRing := svg.Use().Href(svg.String("#" + string(req.Shape))).Style(svg.String(GetPaddedStyle(req.Shape, color.White, color.White, 0.025)))
-	finderMiddleRing.Attrs["transform"] = svg.String(fmt.Sprintf("scale(%d) translate(%f, %f)", 5, 1./5., 1./5.))
-	finderCenterRing := svg.Use().Href(svg.String("#" + string(req.Shape))).Style(svg.String(GetPaddedStyle(req.Shape, req.Color, color.Black, 0.025)))
-	finderCenterRing.Attrs["transform"] = svg.String(fmt.Sprintf("scale(%d) translate(%f, %f)", 3, 2./3., 2./3.))
-	finderPattern := svg.G(
-		finderBackground,
-		finderOuterRing,
-		finderMiddleRing,
-		finderCenterRing,
-	).ID("finderpattern")
+	finderBackground.Attrs["transform"] = svg.String(GetTransform(req.Shape, 7.0, 0.0, 0.))
+	finderOuterRing := svg.Use().Href(svg.String("#" + string(req.Shape))).Style(svg.String(GetStyle(req.Shape, req.Color, color.Black, 7.)))
+	finderOuterRing.Attrs["transform"] = svg.String(GetTransform(req.Shape, 7.0, 0.0, 0.2))
+	finderMiddleRing := svg.Use().Href(svg.String("#" + string(req.Shape))).Style(svg.String(NoStrokeStyle(color.White, color.White)))
+	finderMiddleRing.Attrs["transform"] = svg.String(GetTransform(req.Shape, 5.0, 1.0, 0.))
+	finderCenterRing := svg.Use().Href(svg.String("#" + string(req.Shape))).Style(svg.String(NoStrokeStyle(req.Color, color.Black)))
+	finderCenterRing.Attrs["transform"] = svg.String(GetTransform(req.Shape, 3.0, 2.0, 0.))
+	finderPatternGroup := svg.G(finderBackground, finderOuterRing, finderMiddleRing, finderCenterRing).ID("finderpattern")
+
 	canvas.AppendChildren(
 		svg.Defs(
 			circle,
 			square,
 			squircle,
-			finderPattern,
-			alignmentPattern,
+			finderPatternGroup,
+			alignmentPatternGroup,
 		),
 	)
 
-	// All Modules
+	// Draw Modules
 	for y, row := range req.Cells {
 		for x, c := range row {
 			if c == color.Black {
 				canvas.AppendChildren(
 					svg.Use().XY(float64(x), float64(y), svg.Number).Href(svg.String(fmt.Sprintf("#%s", req.Shape))).Style(
-						svg.String(GetCellStyle(req.Shape, req.Color, c)),
+						svg.String(GetStyle(req.Shape, req.Color, c, 1.0)),
 					),
 				)
 			}
@@ -129,34 +128,32 @@ func WriteSVG(req SVGRequest) {
 		svg.Use().Href(svg.String("#finderpattern")).XY(0, float64(dim-7), svg.Number),
 	)
 
-	// Draw logo ensuring a minimum size of 5 modules
-	logoSize := int(float64(dim) * logoRelativeSize)
 	// Ensure logo size is always odd
+	logoSize := int(math.Floor(float64(dim) * logoRelativeSize))
 	logoSize += (logoSize + 1) % 2
-	fmt.Println("Logo size:", logoSize)
 
+	logoPos := dim/2. - logoSize/2.
+
+	logoCenter := float64(logoPos) + float64(logoSize)/2.
+
+	// Draw logo ensuring a minimum size of 5 modules
 	if req.Logo != "" && logoSize >= 5 {
-		logoPos := dim/2 - logoSize/2
 
-		// Cleanup overlapping QR modules
-		padding := 0.
-		switch req.Shape {
-		case ShapeCircle:
-			padding = 2
-		case ShapeSquircle:
-			padding = 3
-		case ShapeSquare:
-			padding = 2
+		// Create safe zone around logo
+		var padding float64
+		if req.Shape != ShapeSquare {
+			padding = 2.0
+		} else {
+			padding = 1.0
 		}
-		startCell := logoPos
-		endCell := startCell + logoSize
+		startCell := logoPos - 1
+		endCell := logoPos + logoSize + 1
 
-		center := float64(logoPos) + float64(logoSize)/2.
-		radius := float64(logoSize/2) + padding
-		for y := startCell - 1; y < endCell+1; y++ {
-			for x := startCell - 1; x < endCell+1; x++ {
-				dx := float64(x) + .5 - center
-				dy := float64(y) + .5 - center
+		radius := float64(logoSize)/2. + padding
+		for y := startCell; y < endCell; y++ {
+			for x := startCell; x < endCell; x++ {
+				dx := float64(x) + .5 - logoCenter
+				dy := float64(y) + .5 - logoCenter
 				distance := dx*dx + dy*dy
 				if distance < radius*radius {
 					canvas.AppendChildren(
@@ -167,19 +164,19 @@ func WriteSVG(req SVGRequest) {
 		}
 
 		// Place logo with clipping path
-		logoClipPath := svg.Use().Href("#circle")
-		logoClipPath.Attrs["transform"] = svg.String(fmt.Sprintf("scale(%d) translate(%f %f)", logoSize, float64(logoPos)/float64(logoSize), float64(logoPos)/float64(logoSize)))
+		logoClipPath := svg.Use().Href(svg.String("#" + string(req.Shape)))
+		logoClipPath.Attrs["transform"] = svg.String(GetTransform(req.Shape, float64(logoSize), float64(logoPos), 0.))
 
-		logoBorderScale := float64(logoSize) + .8
-		logoBorderPos := float64(dim)/2. - float64(logoBorderScale)/2.
-		fmt.Println("Logo border position:", logoBorderPos)
-		fmt.Println("Logo border scale:", logoBorderScale)
-		logoBorder := svg.Use().Href("#circle").Style(svg.String(fmt.Sprintf("fill:none;stroke:black;stroke-width:%f", 0.25/float64(logoBorderScale))))
-		logoBorder.Attrs["transform"] = svg.String(fmt.Sprintf("scale(%f) translate(%f %f)", logoBorderScale, float64(logoBorderPos)/float64(logoBorderScale), float64(logoBorderPos)/float64(logoBorderScale)))
+		logoBorderScale := float64(logoSize) + 1.0
+		logoBorderPos := float64(logoPos) - 0.5
+		logoBorder := svg.Use().Href(svg.String("#" + string(req.Shape))).Style(svg.String(fmt.Sprintf("fill:none;stroke:%s;stroke-width:%f", ColorToFill(req.Color), logoBorderWidth/logoBorderScale)))
+		logoBorder.Attrs["transform"] = svg.String(GetTransform(req.Shape, logoBorderScale, logoBorderPos, 0.))
+		if req.Shape == ShapeSquare {
+			logoBorder.Visibility(svg.String("hidden"))
+		}
+
 		canvas.AppendChildren(
-			svg.ClipPath().ID("logoClip").AppendChildren(
-				logoClipPath,
-			),
+			svg.ClipPath(logoClipPath).ID("logoClip"),
 			logoBorder,
 			svg.Image().Href(svg.String(req.Logo)).XYWidthHeight(
 				float64(logoPos), float64(logoPos), float64(logoSize), float64(logoSize), svg.Number,
@@ -266,21 +263,29 @@ func connect(req SVGRequest, canvas *svg.SVGElement, dim int) {
 	}
 }
 
-func GetCellStyle(shape Shape, target, source color.Color) string {
+func NoPaddingTransform(scale float64, pos float64) string {
+	return fmt.Sprintf("scale(%f) translate(%f, %f)", scale, pos/scale, pos/scale)
+}
+
+func PaddedTransform(scale float64, pos float64, padding float64) string {
+	return fmt.Sprintf("scale(%f) translate(%f, %f)", scale-padding, (pos+padding/2.)/(scale-padding), (pos+padding/2.)/(scale-padding))
+}
+
+func GetTransform(shape Shape, scale float64, pos float64, padding float64) string {
 	switch shape {
 	case ShapeSquare:
-		return NoStrokeStyle(target, source)
+		return NoPaddingTransform(scale, pos)
 	default:
-		return StrokeStyle(target, source, 0.125)
+		return PaddedTransform(scale, pos, padding)
 	}
 }
 
-func GetPaddedStyle(shape Shape, target, source color.Color, padding float32) string {
+func GetStyle(shape Shape, target, source color.Color, scale float64) string {
 	switch shape {
 	case ShapeSquare:
 		return NoStrokeStyle(target, source)
 	default:
-		return StrokeStyle(target, source, padding)
+		return StrokeStyle(target, source, cell_gap/scale)
 	}
 }
 
@@ -291,14 +296,17 @@ func NoStrokeStyle(target, source color.Color) string {
 	return "fill:white;stroke:none"
 }
 
-func StrokeStyle(target, source color.Color, padding float32) string {
+func StrokeStyle(target, source color.Color, width float64) string {
 	if source == color.Black {
-		return fmt.Sprintf("fill:%s;stroke:white;stroke-width:%f", ColorToFill(target), padding)
+		return fmt.Sprintf("fill:%s;stroke:white;stroke-width:%f", ColorToFill(target), width)
 	}
-	return fmt.Sprintf("fill:white;stroke:white;stroke-width:%f", padding)
+	return fmt.Sprintf("fill:white;stroke:white;stroke-width:%f", width)
 }
 
 func ColorToFill(c color.Color) string {
+	if c == nil {
+		return "none"
+	}
 	r, g, b, _ := c.RGBA()
 	return fmt.Sprintf("rgb(%d %d %d)", r>>8, g>>8, b>>8)
 }
