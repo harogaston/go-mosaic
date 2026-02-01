@@ -17,17 +17,18 @@ import (
 
 // qr definition and temporary data structures
 type qr struct {
-	matrix              [][]module
-	version             version.QRVersion
-	error_corr_level    errcorr
-	size                int
-	data                []byte
-	encoded_data        bitseq.BitSeq
-	mode                modes.QRMode
-	mask                int
-	logo                string
-	is_function_pattern [][]bool
-	debug               bool
+	matrix                 [][]module
+	version                version.QRVersion
+	error_corr_level       errcorr
+	size                   int
+	data                   []byte
+	encoded_data           bitseq.BitSeq
+	mode                   modes.QRMode
+	mask                   int
+	logo                   string
+	is_function_pattern    [][]bool
+	alignment_patterns_pos [][]int
+	debug                  bool
 }
 
 func (qr *qr) DebugPrint() {
@@ -319,6 +320,7 @@ func (qr *qr) timing_patterns() {
 // places alignment patter modules
 func (qr *qr) alignment_patterns() {
 	coords := get_alignment_patterns_for_version(qr.version.Number)
+	alignment_patterns_pos := make([][]int, 0)
 	for _, alignment_pos := range coords {
 		alignment_pattern_upper_left := []int{alignment_pos[0] - 2, alignment_pos[1] - 2}
 		alignment_pattern_lower_left := []int{alignment_pos[0] + 2, alignment_pos[1] - 2}
@@ -347,7 +349,9 @@ func (qr *qr) alignment_patterns() {
 
 		// no colissions good to go
 		qr.add_alignment_pattern_module(alignment_pos[0], alignment_pos[1])
+		alignment_patterns_pos = append(alignment_patterns_pos, alignment_pos)
 	}
+	qr.alignment_patterns_pos = alignment_patterns_pos
 }
 
 // places an alignment pattern module (5x5) in the given position
@@ -792,12 +796,13 @@ func (qr *qr) Draw(shape writer.Shape) {
 	}
 
 	req := writer.SVGRequest{
-		Scale: 16,
-		Cells: pixs,
-		Shape: shape,
-		Logo:  qr.logo,
-		Color: color.RGBA{10, 100, 0, 255},
-		Debug: qr.debug,
+		Scale:             16,
+		Cells:             pixs,
+		AlignmentPatterns: qr.alignment_patterns_pos,
+		Shape:             shape,
+		Logo:              qr.logo,
+		Color:             color.RGBA{10, 100, 0, 255},
+		Debug:             qr.debug,
 	}
 	writer.WriteSVG(req)
 }
@@ -816,7 +821,7 @@ func main() {
 	dataStr := flag.String("data", "01234567", "Data to encode in the QR code")
 	shapeStr := flag.String("shape", "square", "Shape: square, circle, rounded, slanted, squircle")
 	levelStr := flag.String("level", "L", "ErrorCorrectionLevel: L, M, Q, H")
-	logoPath := flag.String("logo", "resources/logo_circle_mask.png", "Path to logo image to embed in the center")
+	logoPath := flag.Bool("logo", false, "Include logo (default: resources/logo_circle_mask.png)")
 	versionInt := flag.Int("version", 0, "QR Code version 1-40 (auto-detected if 0)")
 	isMicro := flag.Bool("micro", false, "IsMicro: true/false")
 	debug := flag.Bool("debug", false, "Debug mode")
@@ -850,25 +855,31 @@ func main() {
 		fmt.Printf("Warning: unknown shape '%s', defaulting to 'square'\n", *shapeStr)
 	}
 
-	// Validate error correction level
-	var err_corr_level string
-	switch *levelStr {
-	case ERR_CORR_L, ERR_CORR_M, ERR_CORR_Q, ERR_CORR_H:
-		err_corr_level = *levelStr
-	default:
-		err_corr_level = ERR_CORR_L
-		fmt.Printf("Warning: unknown error correction level '%s', defaulting to 'L'\n", *levelStr)
+	// Validate logo path
+	var logo string
+	if *logoPath == true {
+		logo = "resources/logo_circle_mask.png"
 	}
 
-	// Validate logo path
-	if logoPath == nil || *logoPath == "" {
-		*logoPath = "resources/logo_circle_mask.png"
+	// Validate error correction level
+	var err_corr_level string
+	if logo == "" {
+		switch *levelStr {
+		case ERR_CORR_L, ERR_CORR_M, ERR_CORR_Q, ERR_CORR_H:
+			err_corr_level = *levelStr
+		default:
+			err_corr_level = ERR_CORR_L
+			fmt.Printf("Warning: unknown error correction level '%s', defaulting to 'L'\n", *levelStr)
+		}
+	} else {
+		// If logo is included, minimum error correction level is 'H'
+		err_corr_level = ERR_CORR_H
 	}
 
 	req := QRRequest{
 		input_data:     data,
 		is_micro:       *isMicro,
-		logo:           *logoPath,
+		logo:           logo,
 		err_corr_level: err_corr_level,
 		version:        *versionInt,
 		debug:          *debug,
