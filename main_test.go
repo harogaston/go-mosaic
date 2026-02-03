@@ -20,7 +20,7 @@ func TestInterleaving(t *testing.T) {
 	// This should not panic
 	qr := NewQRCode(QRRequest{
 		input_data:     input,
-		err_corr_level: ERR_CORR_Q,
+		err_corr_level: "L",
 	})
 
 	if qr.version.Number < 5 {
@@ -44,7 +44,7 @@ func TestAlphanumeric(t *testing.T) {
 
 	qr := NewQRCode(QRRequest{
 		input_data:     input,
-		err_corr_level: ERR_CORR_L,
+		err_corr_level: "L",
 	})
 
 	// We can't easily check the mode directly as it's internal to generate()

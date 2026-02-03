@@ -698,12 +698,7 @@ func NewQRCode(r QRRequest) *qr {
 	// Encode input_data_bits
 	input_data_bits := encode(mode, r.input_data)
 
-	var version_num int
-	if r.version != 0 {
-		version_num = r.version
-	} else {
-		version_num = GetVersionNumber(mode, format, input_data_bits, errcorr(r.err_corr_level))
-	}
+	version_num := GetVersionNumber(mode, format, input_data_bits, errcorr(r.err_corr_level))
 
 	version := version.QRVersion{
 		Format: format,
@@ -746,10 +741,10 @@ func NewQRCode(r QRRequest) *qr {
 type errcorr string
 
 const (
-	ERR_CORR_L = "L"
-	ERR_CORR_M = "M"
-	ERR_CORR_Q = "Q"
-	ERR_CORR_H = "H"
+	ERR_CORR_L errcorr = "L"
+	ERR_CORR_M errcorr = "M"
+	ERR_CORR_Q errcorr = "Q"
+	ERR_CORR_H errcorr = "H"
 )
 
 func (qr *qr) FullVersion() string {
@@ -812,7 +807,6 @@ type QRRequest struct {
 	is_micro       bool
 	err_corr_level string
 	logo           string
-	version        int
 	debug          bool
 }
 
@@ -822,7 +816,6 @@ func main() {
 	shapeStr := flag.String("shape", "square", "Shape: square, circle, rounded, slanted, squircle")
 	levelStr := flag.String("level", "L", "ErrorCorrectionLevel: L, M, Q, H")
 	logoPath := flag.Bool("logo", false, "Include logo (default: resources/logo_circle_mask.png)")
-	versionInt := flag.Int("version", 0, "QR Code version 1-40 (auto-detected if 0)")
 	isMicro := flag.Bool("micro", false, "IsMicro: true/false")
 	debug := flag.Bool("debug", false, "Debug mode")
 
@@ -867,18 +860,14 @@ func main() {
 	}
 
 	// Validate error correction level
+	fmt.Printf("Using error correction level: %s\n", *levelStr)
 	var err_corr_level string
-	if logo == "" {
-		switch *levelStr {
-		case ERR_CORR_L, ERR_CORR_M, ERR_CORR_Q, ERR_CORR_H:
-			err_corr_level = *levelStr
-		default:
-			err_corr_level = ERR_CORR_L
-			fmt.Printf("Warning: unknown error correction level '%s', defaulting to 'L'\n", *levelStr)
-		}
-	} else {
-		// If logo is included, minimum error correction level is 'H'
-		err_corr_level = ERR_CORR_H
+	switch errcorr(*levelStr) {
+	case ERR_CORR_L, ERR_CORR_M, ERR_CORR_Q, ERR_CORR_H:
+		err_corr_level = *levelStr
+	default:
+		err_corr_level = "L"
+		fmt.Printf("Warning: unknown error correction level '%s', defaulting to 'L'\n", *levelStr)
 	}
 
 	req := QRRequest{
@@ -886,7 +875,6 @@ func main() {
 		is_micro:       *isMicro,
 		logo:           logo,
 		err_corr_level: err_corr_level,
-		version:        *versionInt,
 		debug:          *debug,
 	}
 

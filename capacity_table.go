@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/harogaston/go-mosaic/version"
 )
 
@@ -91,7 +93,7 @@ var microCapacityData = map[int]struct {
 	},
 }
 
-// FIXME: Table values are wrong from level 16 and above
+// capacityData maps QR Code Version (1-40) to its capacity and error correction info
 var capacityData = map[int]struct {
 	totalCodewords int
 	ecInfo         map[errcorr]ECInfo
@@ -230,7 +232,7 @@ var capacityData = map[int]struct {
 			ERR_CORR_Q: {
 				TotalECCodewords: 72,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 2, TotalCodewords: 35, DataCodewords: 15},
+					{NumBlocks: 2, TotalCodewords: 33, DataCodewords: 15},
 					{NumBlocks: 2, TotalCodewords: 34, DataCodewords: 16},
 				},
 			},
@@ -348,6 +350,7 @@ var capacityData = map[int]struct {
 				TotalECCodewords: 110,
 				BlockGroups: []BlockGroup{
 					{NumBlocks: 3, TotalCodewords: 58, DataCodewords: 36},
+					{NumBlocks: 2, TotalCodewords: 59, DataCodewords: 37},
 				},
 			},
 			ERR_CORR_Q: {
@@ -599,31 +602,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 815,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 168,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 5, TotalCodewords: 136, DataCodewords: 108},
 					{NumBlocks: 1, TotalCodewords: 135, DataCodewords: 107},
+					{NumBlocks: 5, TotalCodewords: 136, DataCodewords: 108},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 308,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 5, TotalCodewords: 152, DataCodewords: 122},
-					{NumBlocks: 1, TotalCodewords: 55, DataCodewords: 25},
+					{NumBlocks: 10, TotalCodewords: 74, DataCodewords: 46},
+					{NumBlocks: 1, TotalCodewords: 75, DataCodewords: 47},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 448,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 5, TotalCodewords: 145, DataCodewords: 115},
-					{NumBlocks: 2, TotalCodewords: 45, DataCodewords: 15},
+					{NumBlocks: 1, TotalCodewords: 50, DataCodewords: 22},
+					{NumBlocks: 15, TotalCodewords: 51, DataCodewords: 23},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 532,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 1, TotalCodewords: 75, DataCodewords: 47},
-					{NumBlocks: 10, TotalCodewords: 74, DataCodewords: 46},
+					{NumBlocks: 2, TotalCodewords: 42, DataCodewords: 14},
+					{NumBlocks: 17, TotalCodewords: 43, DataCodewords: 15},
 				},
 			},
 		},
@@ -632,31 +635,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 901,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 180,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 1, TotalCodewords: 151, DataCodewords: 121},
 					{NumBlocks: 5, TotalCodewords: 150, DataCodewords: 120},
+					{NumBlocks: 1, TotalCodewords: 151, DataCodewords: 121},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 26,
+				TotalECCodewords: 338,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 4, TotalCodewords: 70, DataCodewords: 44},
 					{NumBlocks: 9, TotalCodewords: 69, DataCodewords: 43},
+					{NumBlocks: 4, TotalCodewords: 70, DataCodewords: 44},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 24,
+				TotalECCodewords: 504,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 4, TotalCodewords: 64, DataCodewords: 40},
-					{NumBlocks: 15, TotalCodewords: 43, DataCodewords: 19},
+					{NumBlocks: 17, TotalCodewords: 50, DataCodewords: 22},
+					{NumBlocks: 1, TotalCodewords: 51, DataCodewords: 23},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 588,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 1, TotalCodewords: 51, DataCodewords: 23},
-					{NumBlocks: 17, TotalCodewords: 50, DataCodewords: 22},
+					{NumBlocks: 2, TotalCodewords: 42, DataCodewords: 14},
+					{NumBlocks: 19, TotalCodewords: 43, DataCodewords: 15},
 				},
 			},
 		},
@@ -665,31 +668,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 991,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 196,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 4, TotalCodewords: 142, DataCodewords: 114},
 					{NumBlocks: 3, TotalCodewords: 141, DataCodewords: 113},
+					{NumBlocks: 4, TotalCodewords: 142, DataCodewords: 114},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 26,
+				TotalECCodewords: 364,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 11, TotalCodewords: 71, DataCodewords: 45},
 					{NumBlocks: 3, TotalCodewords: 70, DataCodewords: 44},
+					{NumBlocks: 11, TotalCodewords: 71, DataCodewords: 45},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 546,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 3, TotalCodewords: 147, DataCodewords: 117},
-					{NumBlocks: 10, TotalCodewords: 55, DataCodewords: 25},
+					{NumBlocks: 17, TotalCodewords: 47, DataCodewords: 21},
+					{NumBlocks: 4, TotalCodewords: 48, DataCodewords: 22},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 26,
+				TotalECCodewords: 650,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 4, TotalCodewords: 48, DataCodewords: 22},
-					{NumBlocks: 17, TotalCodewords: 47, DataCodewords: 21},
+					{NumBlocks: 9, TotalCodewords: 39, DataCodewords: 13},
+					{NumBlocks: 16, TotalCodewords: 40, DataCodewords: 14},
 				},
 			},
 		},
@@ -698,31 +701,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 1085,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 224,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 5, TotalCodewords: 136, DataCodewords: 108},
 					{NumBlocks: 3, TotalCodewords: 135, DataCodewords: 107},
+					{NumBlocks: 5, TotalCodewords: 136, DataCodewords: 108},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 26,
+				TotalECCodewords: 416,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 13, TotalCodewords: 68, DataCodewords: 42},
 					{NumBlocks: 3, TotalCodewords: 67, DataCodewords: 41},
+					{NumBlocks: 13, TotalCodewords: 68, DataCodewords: 42},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 600,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 3, TotalCodewords: 147, DataCodewords: 117},
-					{NumBlocks: 14, TotalCodewords: 46, DataCodewords: 16},
+					{NumBlocks: 15, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 5, TotalCodewords: 55, DataCodewords: 25},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 700,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 5, TotalCodewords: 55, DataCodewords: 25},
-					{NumBlocks: 15, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 15, TotalCodewords: 43, DataCodewords: 15},
+					{NumBlocks: 10, TotalCodewords: 44, DataCodewords: 16},
 				},
 			},
 		},
@@ -731,30 +734,30 @@ var capacityData = map[int]struct {
 		totalCodewords: 1156,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 224,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 4, TotalCodewords: 145, DataCodewords: 117},
 					{NumBlocks: 4, TotalCodewords: 144, DataCodewords: 116},
+					{NumBlocks: 4, TotalCodewords: 145, DataCodewords: 117},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 26,
-				BlockGroups: []BlockGroup{
-					{NumBlocks: 8, TotalCodewords: 132, DataCodewords: 106},
-					{NumBlocks: 2, TotalCodewords: 50, DataCodewords: 24},
-				},
-			},
-			ERR_CORR_Q: {
-				TotalECCodewords: 26,
+				TotalECCodewords: 442,
 				BlockGroups: []BlockGroup{
 					{NumBlocks: 17, TotalCodewords: 68, DataCodewords: 42},
 				},
 			},
-			ERR_CORR_H: {
-				TotalECCodewords: 28,
+			ERR_CORR_Q: {
+				TotalECCodewords: 644,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 7, TotalCodewords: 73, DataCodewords: 45},
-					{NumBlocks: 15, TotalCodewords: 43, DataCodewords: 15},
+					{NumBlocks: 17, TotalCodewords: 50, DataCodewords: 22},
+					{NumBlocks: 6, TotalCodewords: 51, DataCodewords: 23},
+				},
+			},
+			ERR_CORR_H: {
+				TotalECCodewords: 750,
+				BlockGroups: []BlockGroup{
+					{NumBlocks: 19, TotalCodewords: 46, DataCodewords: 16},
+					{NumBlocks: 6, TotalCodewords: 47, DataCodewords: 17},
 				},
 			},
 		},
@@ -763,27 +766,27 @@ var capacityData = map[int]struct {
 		totalCodewords: 1258,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 252,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 7, TotalCodewords: 140, DataCodewords: 112},
 					{NumBlocks: 2, TotalCodewords: 139, DataCodewords: 111},
+					{NumBlocks: 7, TotalCodewords: 140, DataCodewords: 112},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 476,
 				BlockGroups: []BlockGroup{
 					{NumBlocks: 17, TotalCodewords: 74, DataCodewords: 46},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 690,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 16, TotalCodewords: 55, DataCodewords: 25},
 					{NumBlocks: 7, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 16, TotalCodewords: 55, DataCodewords: 25},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 24,
+				TotalECCodewords: 816,
 				BlockGroups: []BlockGroup{
 					{NumBlocks: 34, TotalCodewords: 37, DataCodewords: 13},
 				},
@@ -794,31 +797,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 1364,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 270,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 5, TotalCodewords: 152, DataCodewords: 122},
 					{NumBlocks: 4, TotalCodewords: 151, DataCodewords: 121},
+					{NumBlocks: 5, TotalCodewords: 152, DataCodewords: 122},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 504,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 14, TotalCodewords: 76, DataCodewords: 48},
 					{NumBlocks: 4, TotalCodewords: 75, DataCodewords: 47},
+					{NumBlocks: 14, TotalCodewords: 76, DataCodewords: 48},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 750,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 14, TotalCodewords: 55, DataCodewords: 25},
 					{NumBlocks: 11, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 14, TotalCodewords: 55, DataCodewords: 25},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 900,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 14, TotalCodewords: 46, DataCodewords: 16},
 					{NumBlocks: 16, TotalCodewords: 45, DataCodewords: 15},
+					{NumBlocks: 14, TotalCodewords: 46, DataCodewords: 16},
 				},
 			},
 		},
@@ -827,31 +830,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 1474,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 300,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 4, TotalCodewords: 148, DataCodewords: 118},
 					{NumBlocks: 6, TotalCodewords: 147, DataCodewords: 117},
+					{NumBlocks: 4, TotalCodewords: 148, DataCodewords: 118},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 560,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 14, TotalCodewords: 74, DataCodewords: 46},
 					{NumBlocks: 6, TotalCodewords: 73, DataCodewords: 45},
+					{NumBlocks: 14, TotalCodewords: 74, DataCodewords: 46},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 810,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 6, TotalCodewords: 146, DataCodewords: 116},
-					{NumBlocks: 13, TotalCodewords: 46, DataCodewords: 16},
+					{NumBlocks: 11, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 16, TotalCodewords: 55, DataCodewords: 25},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 960,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 16, TotalCodewords: 55, DataCodewords: 25},
-					{NumBlocks: 11, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 30, TotalCodewords: 46, DataCodewords: 16},
+					{NumBlocks: 2, TotalCodewords: 47, DataCodewords: 17},
 				},
 			},
 		},
@@ -860,31 +863,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 1588,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 26,
+				TotalECCodewords: 312,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 4, TotalCodewords: 133, DataCodewords: 107},
 					{NumBlocks: 8, TotalCodewords: 132, DataCodewords: 106},
+					{NumBlocks: 4, TotalCodewords: 133, DataCodewords: 107},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 588,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 13, TotalCodewords: 76, DataCodewords: 48},
 					{NumBlocks: 8, TotalCodewords: 75, DataCodewords: 47},
+					{NumBlocks: 13, TotalCodewords: 76, DataCodewords: 48},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 870,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 3, TotalCodewords: 146, DataCodewords: 116},
-					{NumBlocks: 25, TotalCodewords: 46, DataCodewords: 16},
+					{NumBlocks: 7, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 22, TotalCodewords: 55, DataCodewords: 25},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1050,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 22, TotalCodewords: 55, DataCodewords: 25},
-					{NumBlocks: 7, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 22, TotalCodewords: 45, DataCodewords: 15},
+					{NumBlocks: 13, TotalCodewords: 46, DataCodewords: 16},
 				},
 			},
 		},
@@ -893,31 +896,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 1706,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 336,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 2, TotalCodewords: 143, DataCodewords: 115},
 					{NumBlocks: 10, TotalCodewords: 142, DataCodewords: 114},
+					{NumBlocks: 2, TotalCodewords: 143, DataCodewords: 115},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 644,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 4, TotalCodewords: 75, DataCodewords: 47},
 					{NumBlocks: 19, TotalCodewords: 74, DataCodewords: 46},
+					{NumBlocks: 4, TotalCodewords: 75, DataCodewords: 47},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 952,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 6, TotalCodewords: 51, DataCodewords: 23},
 					{NumBlocks: 28, TotalCodewords: 50, DataCodewords: 22},
+					{NumBlocks: 6, TotalCodewords: 51, DataCodewords: 23},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1110,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 4, TotalCodewords: 47, DataCodewords: 17},
 					{NumBlocks: 33, TotalCodewords: 46, DataCodewords: 16},
+					{NumBlocks: 4, TotalCodewords: 47, DataCodewords: 17},
 				},
 			},
 		},
@@ -926,30 +929,30 @@ var capacityData = map[int]struct {
 		totalCodewords: 1828,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 360,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 4, TotalCodewords: 153, DataCodewords: 123},
 					{NumBlocks: 8, TotalCodewords: 152, DataCodewords: 122},
+					{NumBlocks: 4, TotalCodewords: 153, DataCodewords: 123},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 700,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 3, TotalCodewords: 74, DataCodewords: 46},
 					{NumBlocks: 22, TotalCodewords: 73, DataCodewords: 45},
+					{NumBlocks: 3, TotalCodewords: 74, DataCodewords: 46},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1020,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 26, TotalCodewords: 54, DataCodewords: 24},
 					{NumBlocks: 8, TotalCodewords: 53, DataCodewords: 23},
+					{NumBlocks: 26, TotalCodewords: 54, DataCodewords: 24},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1200,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 10, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 12, TotalCodewords: 45, DataCodewords: 15},
 					{NumBlocks: 28, TotalCodewords: 46, DataCodewords: 16},
 				},
 			},
@@ -959,31 +962,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 1921,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 390,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 10, TotalCodewords: 148, DataCodewords: 118},
 					{NumBlocks: 3, TotalCodewords: 147, DataCodewords: 117},
+					{NumBlocks: 10, TotalCodewords: 148, DataCodewords: 118},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 728,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 23, TotalCodewords: 74, DataCodewords: 46},
 					{NumBlocks: 3, TotalCodewords: 73, DataCodewords: 45},
+					{NumBlocks: 23, TotalCodewords: 74, DataCodewords: 46},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1050,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 6, TotalCodewords: 146, DataCodewords: 116},
-					{NumBlocks: 19, TotalCodewords: 55, DataCodewords: 25},
+					{NumBlocks: 4, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 31, TotalCodewords: 55, DataCodewords: 25},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1260,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 5, TotalCodewords: 145, DataCodewords: 115},
-					{NumBlocks: 26, TotalCodewords: 46, DataCodewords: 16},
+					{NumBlocks: 11, TotalCodewords: 45, DataCodewords: 15},
+					{NumBlocks: 31, TotalCodewords: 46, DataCodewords: 16},
 				},
 			},
 		},
@@ -992,31 +995,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 2051,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 420,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 7, TotalCodewords: 147, DataCodewords: 117},
 					{NumBlocks: 7, TotalCodewords: 146, DataCodewords: 116},
+					{NumBlocks: 7, TotalCodewords: 147, DataCodewords: 117},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 784,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 26, TotalCodewords: 76, DataCodewords: 48},
-					{NumBlocks: 1, TotalCodewords: 75, DataCodewords: 47},
+					{NumBlocks: 21, TotalCodewords: 73, DataCodewords: 45},
+					{NumBlocks: 7, TotalCodewords: 74, DataCodewords: 46},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 1140,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 7, TotalCodewords: 74, DataCodewords: 46},
-					{NumBlocks: 21, TotalCodewords: 73, DataCodewords: 45},
+					{NumBlocks: 1, TotalCodewords: 53, DataCodewords: 23},
+					{NumBlocks: 37, TotalCodewords: 54, DataCodewords: 24},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 1350,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 19, TotalCodewords: 74, DataCodewords: 46},
-					{NumBlocks: 15, TotalCodewords: 43, DataCodewords: 15},
+					{NumBlocks: 19, TotalCodewords: 45, DataCodewords: 15},
+					{NumBlocks: 26, TotalCodewords: 46, DataCodewords: 16},
 				},
 			},
 		},
@@ -1025,31 +1028,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 2185,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 450,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 10, TotalCodewords: 146, DataCodewords: 116},
 					{NumBlocks: 5, TotalCodewords: 145, DataCodewords: 115},
+					{NumBlocks: 10, TotalCodewords: 146, DataCodewords: 116},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 812,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 10, TotalCodewords: 142, DataCodewords: 114},
-					{NumBlocks: 15, TotalCodewords: 51, DataCodewords: 23},
+					{NumBlocks: 19, TotalCodewords: 75, DataCodewords: 47},
+					{NumBlocks: 10, TotalCodewords: 76, DataCodewords: 48},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 1200,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 10, TotalCodewords: 76, DataCodewords: 48},
-					{NumBlocks: 19, TotalCodewords: 75, DataCodewords: 47},
+					{NumBlocks: 15, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 25, TotalCodewords: 55, DataCodewords: 25},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1440,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 25, TotalCodewords: 55, DataCodewords: 25},
-					{NumBlocks: 15, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 23, TotalCodewords: 45, DataCodewords: 15},
+					{NumBlocks: 25, TotalCodewords: 46, DataCodewords: 16},
 				},
 			},
 		},
@@ -1058,31 +1061,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 2323,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 480,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 3, TotalCodewords: 146, DataCodewords: 116},
 					{NumBlocks: 13, TotalCodewords: 145, DataCodewords: 115},
+					{NumBlocks: 3, TotalCodewords: 146, DataCodewords: 116},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 868,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 29, TotalCodewords: 75, DataCodewords: 47},
 					{NumBlocks: 2, TotalCodewords: 74, DataCodewords: 46},
+					{NumBlocks: 29, TotalCodewords: 75, DataCodewords: 47},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1290,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 1, TotalCodewords: 55, DataCodewords: 25},
 					{NumBlocks: 42, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 1, TotalCodewords: 55, DataCodewords: 25},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1530,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 28, TotalCodewords: 46, DataCodewords: 16},
 					{NumBlocks: 23, TotalCodewords: 45, DataCodewords: 15},
+					{NumBlocks: 28, TotalCodewords: 46, DataCodewords: 16},
 				},
 			},
 		},
@@ -1091,30 +1094,30 @@ var capacityData = map[int]struct {
 		totalCodewords: 2465,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 510,
 				BlockGroups: []BlockGroup{
 					{NumBlocks: 17, TotalCodewords: 145, DataCodewords: 115},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 924,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 23, TotalCodewords: 75, DataCodewords: 47},
 					{NumBlocks: 10, TotalCodewords: 74, DataCodewords: 46},
+					{NumBlocks: 23, TotalCodewords: 75, DataCodewords: 47},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1350,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 5, TotalCodewords: 152, DataCodewords: 122},
-					{NumBlocks: 31, TotalCodewords: 55, DataCodewords: 25},
+					{NumBlocks: 10, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 35, TotalCodewords: 55, DataCodewords: 25},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1620,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 35, TotalCodewords: 55, DataCodewords: 25},
-					{NumBlocks: 10, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 19, TotalCodewords: 45, DataCodewords: 15},
+					{NumBlocks: 35, TotalCodewords: 46, DataCodewords: 16},
 				},
 			},
 		},
@@ -1123,31 +1126,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 2611,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 540,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 1, TotalCodewords: 146, DataCodewords: 116},
 					{NumBlocks: 17, TotalCodewords: 145, DataCodewords: 115},
+					{NumBlocks: 1, TotalCodewords: 146, DataCodewords: 116},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 980,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 21, TotalCodewords: 75, DataCodewords: 47},
 					{NumBlocks: 14, TotalCodewords: 74, DataCodewords: 46},
+					{NumBlocks: 21, TotalCodewords: 75, DataCodewords: 47},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1440,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 6, TotalCodewords: 151, DataCodewords: 121},
-					{NumBlocks: 31, TotalCodewords: 55, DataCodewords: 25},
+					{NumBlocks: 29, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 19, TotalCodewords: 55, DataCodewords: 25},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1710,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 5, TotalCodewords: 145, DataCodewords: 115},
-					{NumBlocks: 41, TotalCodewords: 46, DataCodewords: 16},
+					{NumBlocks: 11, TotalCodewords: 45, DataCodewords: 15},
+					{NumBlocks: 46, TotalCodewords: 46, DataCodewords: 16},
 				},
 			},
 		},
@@ -1156,31 +1159,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 2761,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 570,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 6, TotalCodewords: 146, DataCodewords: 116},
 					{NumBlocks: 13, TotalCodewords: 145, DataCodewords: 115},
+					{NumBlocks: 6, TotalCodewords: 146, DataCodewords: 116},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 1036,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 3, TotalCodewords: 135, DataCodewords: 107},
-					{NumBlocks: 31, TotalCodewords: 76, DataCodewords: 48},
+					{NumBlocks: 14, TotalCodewords: 74, DataCodewords: 46},
+					{NumBlocks: 23, TotalCodewords: 75, DataCodewords: 47},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 1530,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 23, TotalCodewords: 75, DataCodewords: 47},
-					{NumBlocks: 14, TotalCodewords: 74, DataCodewords: 46},
+					{NumBlocks: 44, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 7, TotalCodewords: 55, DataCodewords: 25},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1800,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 7, TotalCodewords: 55, DataCodewords: 25},
-					{NumBlocks: 44, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 59, TotalCodewords: 46, DataCodewords: 16},
+					{NumBlocks: 1, TotalCodewords: 47, DataCodewords: 17},
 				},
 			},
 		},
@@ -1189,31 +1192,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 2876,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 570,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 17, TotalCodewords: 152, DataCodewords: 122},
-					{NumBlocks: 2, TotalCodewords: 146, DataCodewords: 116},
+					{NumBlocks: 12, TotalCodewords: 151, DataCodewords: 121},
+					{NumBlocks: 7, TotalCodewords: 152, DataCodewords: 122},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 1064,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 26, TotalCodewords: 76, DataCodewords: 48},
 					{NumBlocks: 12, TotalCodewords: 75, DataCodewords: 47},
+					{NumBlocks: 26, TotalCodewords: 76, DataCodewords: 48},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1590,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 4, TotalCodewords: 152, DataCodewords: 122},
-					{NumBlocks: 42, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 39, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 14, TotalCodewords: 55, DataCodewords: 25},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1890,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 5, TotalCodewords: 152, DataCodewords: 122},
-					{NumBlocks: 46, TotalCodewords: 46, DataCodewords: 16},
+					{NumBlocks: 22, TotalCodewords: 45, DataCodewords: 15},
+					{NumBlocks: 41, TotalCodewords: 46, DataCodewords: 16},
 				},
 			},
 		},
@@ -1222,31 +1225,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 3034,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 600,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 14, TotalCodewords: 152, DataCodewords: 122},
 					{NumBlocks: 6, TotalCodewords: 151, DataCodewords: 121},
+					{NumBlocks: 14, TotalCodewords: 152, DataCodewords: 122},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1120,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 20, TotalCodewords: 147, DataCodewords: 117},
-					{NumBlocks: 2, TotalCodewords: 47, DataCodewords: 17},
+					{NumBlocks: 6, TotalCodewords: 75, DataCodewords: 47},
+					{NumBlocks: 34, TotalCodewords: 76, DataCodewords: 48},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1680,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 17, TotalCodewords: 152, DataCodewords: 122},
-					{NumBlocks: 10, TotalCodewords: 45, DataCodewords: 15},
+					{NumBlocks: 46, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 10, TotalCodewords: 55, DataCodewords: 25},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 1980,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 34, TotalCodewords: 76, DataCodewords: 48},
-					{NumBlocks: 6, TotalCodewords: 75, DataCodewords: 47},
+					{NumBlocks: 2, TotalCodewords: 45, DataCodewords: 15},
+					{NumBlocks: 64, TotalCodewords: 46, DataCodewords: 16},
 				},
 			},
 		},
@@ -1255,31 +1258,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 3196,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 630,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 4, TotalCodewords: 153, DataCodewords: 123},
 					{NumBlocks: 17, TotalCodewords: 152, DataCodewords: 122},
+					{NumBlocks: 4, TotalCodewords: 153, DataCodewords: 123},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 1204,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 14, TotalCodewords: 75, DataCodewords: 47},
 					{NumBlocks: 29, TotalCodewords: 74, DataCodewords: 46},
+					{NumBlocks: 14, TotalCodewords: 75, DataCodewords: 47},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1770,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 4, TotalCodewords: 151, DataCodewords: 121},
-					{NumBlocks: 48, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 49, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 10, TotalCodewords: 55, DataCodewords: 25},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 2100,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 10, TotalCodewords: 55, DataCodewords: 25},
-					{NumBlocks: 49, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 24, TotalCodewords: 45, DataCodewords: 15},
+					{NumBlocks: 46, TotalCodewords: 46, DataCodewords: 16},
 				},
 			},
 		},
@@ -1288,31 +1291,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 3362,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 660,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 18, TotalCodewords: 153, DataCodewords: 123},
 					{NumBlocks: 4, TotalCodewords: 152, DataCodewords: 122},
+					{NumBlocks: 18, TotalCodewords: 153, DataCodewords: 123},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1260,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 19, TotalCodewords: 148, DataCodewords: 118},
-					{NumBlocks: 10, TotalCodewords: 55, DataCodewords: 25},
+					{NumBlocks: 13, TotalCodewords: 74, DataCodewords: 46},
+					{NumBlocks: 32, TotalCodewords: 75, DataCodewords: 47},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 1860,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 32, TotalCodewords: 75, DataCodewords: 47},
-					{NumBlocks: 13, TotalCodewords: 74, DataCodewords: 46},
+					{NumBlocks: 48, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 14, TotalCodewords: 55, DataCodewords: 25},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 2220,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 14, TotalCodewords: 55, DataCodewords: 25},
-					{NumBlocks: 48, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 42, TotalCodewords: 45, DataCodewords: 15},
+					{NumBlocks: 32, TotalCodewords: 46, DataCodewords: 16},
 				},
 			},
 		},
@@ -1321,31 +1324,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 3532,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 720,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 4, TotalCodewords: 148, DataCodewords: 118},
 					{NumBlocks: 20, TotalCodewords: 147, DataCodewords: 117},
+					{NumBlocks: 4, TotalCodewords: 148, DataCodewords: 118},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1316,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 19, TotalCodewords: 148, DataCodewords: 118},
-					{NumBlocks: 16, TotalCodewords: 45, DataCodewords: 15},
+					{NumBlocks: 40, TotalCodewords: 75, DataCodewords: 47},
+					{NumBlocks: 7, TotalCodewords: 76, DataCodewords: 48},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 1950,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 14, TotalCodewords: 152, DataCodewords: 122},
-					{NumBlocks: 26, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 43, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 22, TotalCodewords: 55, DataCodewords: 25},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 2310,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 7, TotalCodewords: 76, DataCodewords: 48},
-					{NumBlocks: 40, TotalCodewords: 75, DataCodewords: 47},
+					{NumBlocks: 10, TotalCodewords: 45, DataCodewords: 15},
+					{NumBlocks: 67, TotalCodewords: 46, DataCodewords: 16},
 				},
 			},
 		},
@@ -1354,31 +1357,31 @@ var capacityData = map[int]struct {
 		totalCodewords: 3706,
 		ecInfo: map[errcorr]ECInfo{
 			ERR_CORR_L: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 750,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 6, TotalCodewords: 149, DataCodewords: 119},
 					{NumBlocks: 19, TotalCodewords: 148, DataCodewords: 118},
+					{NumBlocks: 6, TotalCodewords: 149, DataCodewords: 119},
 				},
 			},
 			ERR_CORR_M: {
-				TotalECCodewords: 28,
+				TotalECCodewords: 1372,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 31, TotalCodewords: 76, DataCodewords: 48},
 					{NumBlocks: 18, TotalCodewords: 75, DataCodewords: 47},
+					{NumBlocks: 31, TotalCodewords: 76, DataCodewords: 48},
 				},
 			},
 			ERR_CORR_Q: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 2040,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 34, TotalCodewords: 55, DataCodewords: 25},
 					{NumBlocks: 34, TotalCodewords: 54, DataCodewords: 24},
+					{NumBlocks: 34, TotalCodewords: 55, DataCodewords: 25},
 				},
 			},
 			ERR_CORR_H: {
-				TotalECCodewords: 30,
+				TotalECCodewords: 2430,
 				BlockGroups: []BlockGroup{
-					{NumBlocks: 61, TotalCodewords: 46, DataCodewords: 16},
 					{NumBlocks: 20, TotalCodewords: 45, DataCodewords: 15},
+					{NumBlocks: 61, TotalCodewords: 46, DataCodewords: 16},
 				},
 			},
 		},
@@ -1417,4 +1420,49 @@ func getTotalECCodewords(v version.QRVersion, ecLevel errcorr) int {
 
 func getTotalDataCodewords(v version.QRVersion, ecLevel errcorr) int {
 	return getTotalCodewords(v) - getTotalECCodewords(v, ecLevel)
+}
+
+func ValidateCapacityData() {
+	fmt.Println("Starting validation of QR Code capacity data...")
+	hasError := false
+
+	// Map to print string representation of EC levels
+	ecNames := map[errcorr]string{
+		ERR_CORR_L: "L",
+		ERR_CORR_M: "M",
+		ERR_CORR_Q: "Q",
+		ERR_CORR_H: "H",
+	}
+
+	for version, data := range capacityData {
+		expectedTotal := data.totalCodewords
+
+		for ecLevel, info := range data.ecInfo {
+			calculatedTotal := 0
+			calculatedTotalDataCodewords := 0
+			for _, bg := range info.BlockGroups {
+				// Calculate total codewords: Number of Blocks * Total Codewords per Block
+				calculatedTotal += bg.NumBlocks * bg.TotalCodewords
+				calculatedTotalDataCodewords += bg.NumBlocks * (bg.TotalCodewords - bg.DataCodewords)
+			}
+
+			if calculatedTotal != expectedTotal {
+				fmt.Printf("Mismatch in Version %d [%s]: Expected %d, but calculated sum of blocks is %d\n",
+					version, ecNames[ecLevel], expectedTotal, calculatedTotal)
+				hasError = true
+			}
+
+			if calculatedTotalDataCodewords != info.TotalECCodewords {
+				fmt.Printf("Mismatch in Version %d [%s]: Expected EC Codewords %d, but calculated sum is %d\n",
+					version, ecNames[ecLevel], info.TotalECCodewords, calculatedTotalDataCodewords)
+				hasError = true
+			}
+		}
+	}
+
+	if !hasError {
+		fmt.Println("Success: All Version and Error Correction Level block calculations match the expected total codewords.")
+	} else {
+		fmt.Println("Validation finished with errors.")
+	}
 }

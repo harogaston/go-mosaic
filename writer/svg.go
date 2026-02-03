@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"image/color"
 	"math"
-	"math/rand/v2"
 	"os"
 
 	svg "github.com/twpayne/go-svg"
@@ -13,7 +12,7 @@ import (
 
 const (
 	output_file_path string = "qr.svg"
-	logoRelativeSize        = 1. / 6.
+	logoRelativeSize        = 2. / 7.
 	cell_gap                = 0.125
 	logoBorderWidth         = 0.4
 )
@@ -28,6 +27,55 @@ type SVGRequest struct {
 	Debug             bool
 }
 
+// GenerateRoundedSquare returns an SVG path string for a 1x1 square
+// with a corner radius 'r'.
+// r should be between 0 (sharp square) and 0.5 (circle).
+func GenerateRoundedSquare(r float64) *svgpath.Path {
+	// Clamp r to valid range [0, 0.5]
+	if r > 0.5 {
+		r = 0.5
+	} else if r < 0 {
+		r = 0
+	}
+
+	// k (kappa) is the magic constant to approximate a circular arc
+	// with a cubic Bézier curve: (4/3)*(sqrt(2)-1)
+	const k = 0.552284749831
+
+	off := r * (1 - k)
+
+	return svgpath.New().MoveToAbs([]float64{0, 0.5}).
+		VLineToAbs(r).CurveToAbs([]float64{0, off}, []float64{off, 0}, []float64{r, 0}).
+		HLineToAbs(1-r).CurveToAbs([]float64{1 - off, 0}, []float64{1, off}, []float64{1, r}).
+		VLineToAbs(1-r).CurveToAbs([]float64{1, 1 - off}, []float64{1 - off, 1}, []float64{1 - r, 1}).
+		HLineToAbs(r).CurveToAbs([]float64{off, 1}, []float64{0, 1 - off}, []float64{0, 1 - r}).ClosePath()
+}
+
+// GenerateSquircle returns an SVG path string for a 1x1 squircle
+// with a curviness parameter.
+// curviness should be between 0 (sharp square) and 0.5 (circle).
+func GenerateSquircle(curviness float64) *svgpath.Path {
+	// Clamp curviness to valid range [0, 0.5]
+	if curviness > 0.5 {
+		curviness = 0.5
+	} else if curviness < 0 {
+		curviness = 0
+	}
+
+	pull := curviness
+	invPull := 1.0 - pull
+
+	return svgpath.New().
+		MoveToAbs([]float64{0, 0.5}).
+		CurveToAbs([]float64{0, pull}, []float64{pull, 0}, []float64{0.5, 0}).
+		SCurveToAbs(
+			[]float64{1, pull}, []float64{1.0, 0.5},
+			[]float64{invPull, 1}, []float64{0.5, 1.0},
+			[]float64{0, invPull}, []float64{0, 0.5},
+		).
+		ClosePath()
+}
+
 func WriteSVG(req SVGRequest) {
 	if req.Color == nil {
 		req.Color = color.Black
@@ -40,34 +88,21 @@ func WriteSVG(req SVGRequest) {
 	defer file.Close()
 
 	dim := len(req.Cells)
-	// TODO: Support Minimum Quiet Zone
 	quietZone := 4
 	canvas := svg.New().
 		WidthHeight(float64(dim), float64(dim), svg.Number).
 		Transform(svg.String(fmt.Sprintf("scale(%d) translate(%d, %d)", req.Scale, quietZone, quietZone)))
 	canvas.Attrs["transform-origin"] = svg.String("0 0")
 
-	// Add center cross hair for debugging
-	if req.Debug {
-		canvas.AppendChildren(
-			svg.Path().D(
-				svgpath.New().MoveToAbs([]float64{float64(dim) / 2, 0}).LineToAbs([]float64{float64(dim) / 2, float64(dim)}).MoveToAbs([]float64{0, float64(dim) / 2}).LineToAbs([]float64{float64(dim), float64(dim) / 2}),
-			).Style("stroke:red;stroke-width:0.1"),
-		)
-	}
-
 	// Definitions
 	circle := svg.Circle().R(svg.Number(0.5)).ID(svg.String(ShapeCircle))
 	circle.Attrs["transform"] = svg.String("translate(0.5,0.5)")
-
 	square := svg.Rect().XYWidthHeight(0, 0, 1, 1, svg.Number).ID(svg.String(ShapeSquare))
-
-	squircle := svg.Path().D(
-		svgpath.New().MoveToAbs([]float64{0, 0.5}).CurveToAbs([]float64{0, 0.125}, []float64{0.125, 0}, []float64{0.5, 0}).SCurveToAbs([]float64{1, 0.125}, []float64{1., 0.5}, []float64{0.875, 1.}, []float64{0.5, 1.}, []float64{0, 0.875}, []float64{0, 0.5}).ClosePath(),
-	).ID(svg.String(ShapeSquircle))
+	rounded := svg.Path().D(GenerateRoundedSquare(0.35)).ID(svg.String(ShapeRounded))
+	squircle := svg.Path().D(GenerateSquircle(0.125)).ID(svg.String(ShapeSquircle))
 
 	alignmentBackground := svg.Use().Href(svg.String("#square")).Style("fill:white")
-	alignmentBackground.Attrs["transform"] = svg.String(GetTransform(req.Shape, 5.0, 0.0, 0.))
+	alignmentBackground.Attrs["transform"] = svg.String(GetTransform(ShapeSquare, 5.0, 0.0, 0.))
 	alignmentOuterRing := svg.Use().Href(svg.String("#" + string(req.Shape))).Style(svg.String(GetStyle(req.Shape, req.Color, color.Black, 5.0)))
 	alignmentOuterRing.Attrs["transform"] = svg.String(GetTransform(req.Shape, 5.0, 0.0, 0.2))
 	alignmentMiddleRing := svg.Use().Href(svg.String("#" + string(req.Shape))).Style(svg.String(NoStrokeStyle(color.White, color.White)))
@@ -77,7 +112,7 @@ func WriteSVG(req SVGRequest) {
 	alignmentPatternGroup := svg.G(alignmentBackground, alignmentOuterRing, alignmentMiddleRing, alignmentCenterRing).ID("alignmentpattern")
 
 	finderBackground := svg.Use().Href(svg.String("#square")).Style("fill:white")
-	finderBackground.Attrs["transform"] = svg.String(GetTransform(req.Shape, 7.0, 0.0, 0.))
+	finderBackground.Attrs["transform"] = svg.String(GetTransform(ShapeSquare, 7.0, 0.0, 0.))
 	finderOuterRing := svg.Use().Href(svg.String("#" + string(req.Shape))).Style(svg.String(GetStyle(req.Shape, req.Color, color.Black, 7.)))
 	finderOuterRing.Attrs["transform"] = svg.String(GetTransform(req.Shape, 7.0, 0.0, 0.2))
 	finderMiddleRing := svg.Use().Href(svg.String("#" + string(req.Shape))).Style(svg.String(NoStrokeStyle(color.White, color.White)))
@@ -90,6 +125,7 @@ func WriteSVG(req SVGRequest) {
 		svg.Defs(
 			circle,
 			square,
+			rounded,
 			squircle,
 			finderPatternGroup,
 			alignmentPatternGroup,
@@ -108,9 +144,6 @@ func WriteSVG(req SVGRequest) {
 			}
 		}
 	}
-
-	// Connect neighboring modules
-	connect(req, canvas, dim)
 
 	// Superimpose alignment patterns (for versions >= 2)
 	if dim >= 21+4 {
@@ -190,102 +223,31 @@ func WriteSVG(req SVGRequest) {
 	}
 }
 
-// connect encapsulates the logic for drawing connected shapes (rectangles) based on module color.
-func connect(req SVGRequest, canvas *svg.SVGElement, dim int) {
-	// featEnabled is false in the original code, thus this whole function is effectively disabled.
-	// We preserve the original behavior.
-	featEnabled := false
-	if !featEnabled {
-		return
-	}
-
-	width := len(req.Cells) // Using len(req.Cells) for correct indexing into the visited map
-	visited := make(map[int]struct{}, width*width)
-
-	// Helper function to draw a connecting rectangle
-	drawConnectingRect := func(x, y int, dir uint64, c color.Color) {
-		if dir == 0 { // Horizontal
-			canvas.AppendChildren(
-				svg.Rect().XYWidthHeight(float64(x-4)+0.5, float64(y-4), 1, 1, svg.Number).Style(
-					svg.String(NoStrokeStyle(req.Color, c)),
-				),
-			)
-		} else { // Vertical
-			canvas.AppendChildren(
-				svg.Rect().XYWidthHeight(float64(x-4), float64(y-4)+0.5, 1, 1, svg.Number).Style(
-					svg.String(NoStrokeStyle(req.Color, c)),
-				),
-			)
-		}
-	}
-
-	// Helper function to attempt connection in a given direction
-	tryConnectInDirection := func(startX, startY int, c color.Color, currentDir uint64) bool {
-		foundNeighbor := false
-		if currentDir == 0 { // Horizontal
-			for nx := startX + 1; nx < dim && nx < width && req.Cells[startY][nx] == c; nx++ { // Original code used `nx < dim`. Preserving it.
-				if _, ok := visited[startY*width+nx]; ok {
-					break
-				}
-				foundNeighbor = true
-				visited[startY*width+nx] = struct{}{}
-				drawConnectingRect(nx-1, startY, currentDir, c) // nx-1 is the x-coordinate of the left module for the connection
-			}
-		} else { // Vertical
-			for ny := startY + 1; ny < width && req.Cells[ny][startX] == c; ny++ {
-				if _, ok := visited[ny*width+startX]; ok {
-					break
-				}
-				foundNeighbor = true
-				visited[ny*width+startX] = struct{}{}
-				drawConnectingRect(startX, ny-1, currentDir, c) // ny-1 is the y-coordinate of the top module for the connection
-			}
-		}
-		return foundNeighbor
-	}
-
-	for y, row := range req.Cells {
-		for x, c := range row {
-			if c == color.Black { // Only consider black modules
-				if _, ok := visited[y*width+x]; !ok {
-					visited[y*width+x] = struct{}{} // Mark current cell as visited
-
-					dir := rand.Uint64() & 1 // Pick random initial direction (0 for horizontal, 1 for vertical)
-
-					// Try connecting in the first direction
-					if !tryConnectInDirection(x, y, c, dir) {
-						// If no connection was found in the first direction, try the other direction
-						tryConnectInDirection(x, y, c, 1-dir)
-					}
-				}
-			}
-		}
-	}
-}
-
-func NoPaddingTransform(scale float64, pos float64) string {
-	return fmt.Sprintf("scale(%f) translate(%f, %f)", scale, pos/scale, pos/scale)
-}
-
-func PaddedTransform(scale float64, pos float64, padding float64) string {
-	return fmt.Sprintf("scale(%f) translate(%f, %f)", scale-padding, (pos+padding/2.)/(scale-padding), (pos+padding/2.)/(scale-padding))
-}
-
 func GetTransform(shape Shape, scale float64, pos float64, padding float64) string {
 	switch shape {
 	case ShapeSquare:
-		return NoPaddingTransform(scale, pos)
-	default:
-		return PaddedTransform(scale, pos, padding)
+		padding = 0
 	}
+	return fmt.Sprintf("scale(%f) translate(%f, %f)", scale-padding, (pos+padding/2.)/(scale-padding), (pos+padding/2.)/(scale-padding))
 }
 
 func GetStyle(shape Shape, target, source color.Color, scale float64) string {
+	var fill color.Color
+	fill = color.White
+	if source == color.Black {
+		fill = target
+	}
+
+	var width float64
+	if scale != 0 {
+		width = cell_gap / scale
+	}
+
 	switch shape {
 	case ShapeSquare:
-		return NoStrokeStyle(target, source)
+		return fmt.Sprintf("fill:%s;stroke:none", ColorToFill(fill))
 	default:
-		return StrokeStyle(target, source, cell_gap/scale)
+		return fmt.Sprintf("fill:%s;stroke:white;stroke-width:%f", ColorToFill(fill), width)
 	}
 }
 
@@ -294,13 +256,6 @@ func NoStrokeStyle(target, source color.Color) string {
 		return fmt.Sprintf("fill:%s;stroke:none", ColorToFill(target))
 	}
 	return "fill:white;stroke:none"
-}
-
-func StrokeStyle(target, source color.Color, width float64) string {
-	if source == color.Black {
-		return fmt.Sprintf("fill:%s;stroke:white;stroke-width:%f", ColorToFill(target), width)
-	}
-	return fmt.Sprintf("fill:white;stroke:white;stroke-width:%f", width)
 }
 
 func ColorToFill(c color.Color) string {
